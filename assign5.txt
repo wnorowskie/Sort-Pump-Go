@@ -1,0 +1,49 @@
+Eric Wnorowski
+Professor Smith
+CS-377 Parallel Programming
+21 November 2022
+
+Assignment 5 Sort-Pump.Go:
+
+    This was certainly the most challenging homework to date, but also one of the most interesting. At 
+first I took my time trying to familiarize myself with Go and the use of channels. I read some of the
+resources provided as well as some online sources in order to understand how channels could be used for
+concurrency in Go. It was certainly different then some of the other concurrency methods that we have 
+used like UPC, C, and Java. I realized that these channels could be an extremely easy method towards
+optimizing programs. However, the implementation of these channels and processes was much more difficult
+than what meets the eye. After taking some time (probably too much) to understand both the new language Go
+and what was being ask in the assignment I started to jump into the code. There were many times where I would
+come close, but find my program deadlocking or failing to hit certain cases. To start the randNums() function
+was not all too bad, due to it's similarlity with sieve.go. The only difference being that this would not loop 
+forever, so it took me some time to understand how to loop a finite number of times with goroutines. I 
+debated for a long time weather or not to be continously sending kill signals (false when new numbers
+were still be generated). I continously changed it, at one point even taking it out all together in 
+an attempt to solve cell() and printSorted()
+    It took a lot of research and even some questions to my peers to understand how I would be reading 
+in two values into the cell() processes. I quickly figured out that channels could certainly not write
+two numbers at once, so I knew that one would have to be read first. In class on Monday you mentioned
+that you might be able to do it within the for-loop but it would complicate things. Well it certainly
+did for me, as I tried to get the cell process to know when it was on its first iteration, so that it 
+would store that value for the next iteration. However, this became messy & was causing the program to
+deadlock at times as well. After looking into it more and asking questions of my peers I realized that
+the src would need to be read prior to the loop in order to compare that first value read in to the 
+following. 
+    printSorted() also seemed straightforward, but I looked to much into the way that sieve.go is
+written because in that program numbers are being printed within the loop. At first I tried printSorted()
+after the loop but ran into deadlocking errors due to my assignment of channels. Then because of sieve
+I tried bringing the printSorted() inside of the loop which cause all sorts of errors. Then I thought
+I might have to create printSorted()'s goroutines before the cell for loop then have it write to that channel
+on the final iteration of the cell for-loop. The other small piece of code I was missing in printSorted()
+was break, but after re-reading the HW assignment, I realized it was needed to stop the printSorted()
+goroutines.
+    My main function was an issue with printSorted, but for a long time I had the same idea as Professor's
+solution of creating new source and kill channels within the for loop (because sieve.go did a similar set-up).
+But as I said previously I would not re-assign the variables to connect them. I knew that cell-process diagram
+was important and that the needed to be connected, so I thought that would be through continually using the 
+same variables, rather than updating them every step of the way. After figuring out that last key step, my 
+sort-pump came to life. It does differ from Professor's solutions because I do no declare the prev, next, etc.
+channels prior to the loop in main(). Instead I use the same src & kill channel from randNums() throughout the loop,
+and declare nextSrc & nextKill within the loop.
+    This assignment was certainly frustrating at times, but it made me learn and understand the concurrency
+capabilites of Go. It is always fun to tackle a new language as well, prove that it is not as difficult as it
+seems. Versatility is always quality skill and it was fun to test it!
